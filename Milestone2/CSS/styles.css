@@ -60,7 +60,7 @@
     position: absolute;
     bottom: 0px;
     position: absolute;
-    top: 75%;
+    top: 70%;
     right: 0;
     left: 0;
     padding-left: 10%;
@@ -73,7 +73,7 @@
         top:90%
     }
     100%{
-        top:75%
+        top:70%
     }
 }
 
