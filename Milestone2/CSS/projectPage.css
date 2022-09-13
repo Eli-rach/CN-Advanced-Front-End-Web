@@ -1,0 +1,41 @@
+*{
+    color: #F0F6F6;
+}
+
+.flexContainerLarge{
+    margin:2rem;
+    display: flex;
+    /* flex-wrap: wrap; */
+}
+
+.flexContainerRow{
+    display: flex;
+    flex-flow: row;
+    /* margin: 20%; */
+}
+
+.flexContainerColumn{
+    display: flex;
+    flex-flow: column;
+    flex-direction: column;
+    margin-top: 9rem;
+    margin-right: 12rem;
+    margin-left: 8rem;  
+}
+
+i{
+    margin-top:9rem;
+    padding: 2rem;
+    font-size: 40px
+}
+
+.projectImg{
+    padding: 12rem 15rem; 
+    /* Gonna change this to width */
+}
+@media only screen and (max-width: 1200px){
+    .flexContainerLarge{
+        flex-wrap: wrap;
+    }
+}
+
