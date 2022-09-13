@@ -2,6 +2,10 @@
     color: #F0F6F6;
 }
 
+a{
+    text-decoration: none;
+    padding: 2rem 4rem;
+}
 .flexContainerLarge{
     margin:2rem;
     display: flex;
