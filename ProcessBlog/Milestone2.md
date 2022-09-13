@@ -39,7 +39,6 @@ This page will hold all the projects I will work on for this class.  The Div wil
 ### To-do for this page
 
 * Create a class description
-
 * Throw the first assignment into the portal
 
 
@@ -48,6 +47,10 @@ This page will hold all the projects I will work on for this class.  The Div wil
 For this page I wanted to allow multiple photos to be looked at, especially for bigger projects so I'm working on a carosel for individual projects.  It will contain a link to the project site and a link to the project write-up.  Also will contain a breif description of the project.
 
 ![singleProjectPage](./Milestone2ClassPortal/ProjectPageEmpty.jpg)
+
+### To-do for this page
+
+* Make the carosel work
 
 
 ## Biggest Challenges
