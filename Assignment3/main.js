@@ -1,4 +1,5 @@
 function quiz(){
+    alert("Ready for a quiz?");
 	let score = 0;
 	let num= 0;
 	let question;
@@ -43,6 +44,6 @@ function quiz(){
 
 }
 
-alert("Ready for a quiz?");
+
 
 document.getElementById('questionArea').addEventListener('click', quiz)
