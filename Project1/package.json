@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "cannon-es": "^0.20.0",
-    "esbuild": "^0.15.10",
+    "dat.gui": "^0.7.9",
+    "esbuild": "^0.15.11",
     "three": "^0.145.0"
   }
 }
