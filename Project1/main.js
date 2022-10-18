@@ -5,6 +5,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import * as CANNON from 'cannon-es'
 import { Raycaster, ShaderMaterial, WireframeGeometry } from 'three';
+import { Material } from 'cannon-es';
 
 // const D6 = new URL('./Models/DiceD6.obj', import.meta.url);
 const renderer = new THREE.WebGLRenderer();
@@ -15,6 +16,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
+
+const world = new CANNON.World({
+  gravity: new CANNON.Vec3(0,-9.81,0)
+});
 
 const camera = new THREE.PerspectiveCamera(
   45,
@@ -53,7 +58,6 @@ groundMesh.receiveShadow = true;
 
 
 
-
 const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
 
@@ -78,10 +82,24 @@ scene.add(boxMesh);
 
 const assetLoader = new GLTFLoader();
 const dice = assetLoader.load("./Models/DiceD6.gltf", (gtlf) =>{
+  const diceID = gtlf.scene.id
   gtlf.castShadow = true;
   gtlf.scene.scale.set(.25, .25, .25);
+  const size = box.getSize(new THREE.Vector3());
+  gtlf.scene.name = "D6";
+  gtlf.scene.body = new CANNON.Body({
+    mass: 1,
+    shape: new CANNON.Box(new CANNON.Vec3(size.x/2, size.y/2, size.z/2))
+  })
   scene.add(gtlf.scene)
+  world.add(gtlf.scene)
+
+
 });
+
+
+
+
 
 
 
@@ -104,25 +122,46 @@ gui.add(options, 'penumbra', 0, 1);
 gui.add(options, 'intensity', 0, 1);
 
 
-const world = new CANNON.World({
-  gravity: new CANNON.Vec3(0,-9.81,0)
-});
 
+const groundPhysMat = new CANNON.Material();
 const groundBody = new CANNON.Body({
-  shape: new CANNON.Plane,
-  type: CANNON.Body.STATIC
+  shape: new CANNON.Box(new CANNON.Vec3(15,15,0.1)),
+  type: CANNON.Body.STATIC,
+  material:groundPhysMat
 });
 
-// const boxBody = new CANNON.Body({
-//   mass:1,
-//   shape: new CANNON.Box()
-// })
+
+
+world.addBody(groundBody);
 groundBody.position.y = -5;
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
 
-world.addBody(groundBody);
-// world.addBody(boxBody);
+const boxPhysMat = new CANNON.Material();
+const boxBody = new CANNON.Body({
+  mass:1,
+  shape: new CANNON.Box(new CANNON.Vec3(1,1,1)),
+  position: new CANNON.Vec3(0,10,5),
+  material:boxPhysMat
+});
+world.addBody(boxBody);
 
+let velocity1 = Math.random() *5
+let velocity2 = Math.random() *5
+let velocity3 = Math.random() *5
+
+boxBody.angularVelocity.set(velocity1,velocity2,velocity3);
+// console.log(velocity1 + ", " + velocity2 + ", " + velocity3)
+
+
+
+
+
+
+
+// world.addBody(boxBody);
+const dice_ground = new CANNON.ContactMaterial(groundPhysMat, boxPhysMat, { restitution: 0.45 })
+
+world.addContactMaterial(dice_ground);
 const timeStep = 1/60
 
 
@@ -136,12 +175,15 @@ function animate(time) {
   groundMesh.position.copy(groundBody.position);
   groundMesh.quaternion.copy(groundBody.quaternion);
 
-  // dice.position.copy(boxBody.position);
-  // dice.quaternion.copy(boxBody.quaternion);
+  boxMesh.position.copy(boxBody.position);
+  boxMesh.quaternion.copy(boxBody.quaternion);
+
 
 
 
   renderer.render(scene, camera);
+
+  // console.log(boxMesh.quaternion)
   
 }
 

@@ -3044,9 +3044,9 @@
     clone() {
       return new this.constructor().copy(this);
     }
-    copy(box) {
-      this.min.copy(box.min);
-      this.max.copy(box.max);
+    copy(box2) {
+      this.min.copy(box2.min);
+      this.max.copy(box2.max);
       return this;
     }
     makeEmpty() {
@@ -3106,8 +3106,8 @@
     containsPoint(point) {
       return point.x < this.min.x || point.x > this.max.x || point.y < this.min.y || point.y > this.max.y || point.z < this.min.z || point.z > this.max.z ? false : true;
     }
-    containsBox(box) {
-      return this.min.x <= box.min.x && box.max.x <= this.max.x && this.min.y <= box.min.y && box.max.y <= this.max.y && this.min.z <= box.min.z && box.max.z <= this.max.z;
+    containsBox(box2) {
+      return this.min.x <= box2.min.x && box2.max.x <= this.max.x && this.min.y <= box2.min.y && box2.max.y <= this.max.y && this.min.z <= box2.min.z && box2.max.z <= this.max.z;
     }
     getParameter(point, target) {
       return target.set(
@@ -3116,8 +3116,8 @@
         (point.z - this.min.z) / (this.max.z - this.min.z)
       );
     }
-    intersectsBox(box) {
-      return box.max.x < this.min.x || box.min.x > this.max.x || box.max.y < this.min.y || box.min.y > this.max.y || box.max.z < this.min.z || box.min.z > this.max.z ? false : true;
+    intersectsBox(box2) {
+      return box2.max.x < this.min.x || box2.min.x > this.max.x || box2.max.y < this.min.y || box2.min.y > this.max.y || box2.max.z < this.min.z || box2.min.z > this.max.z ? false : true;
     }
     intersectsSphere(sphere) {
       this.clampPoint(sphere.center, _vector$b);
@@ -3212,16 +3212,16 @@
       target.radius = this.getSize(_vector$b).length() * 0.5;
       return target;
     }
-    intersect(box) {
-      this.min.max(box.min);
-      this.max.min(box.max);
+    intersect(box2) {
+      this.min.max(box2.min);
+      this.max.min(box2.max);
       if (this.isEmpty())
         this.makeEmpty();
       return this;
     }
-    union(box) {
-      this.min.min(box.min);
-      this.max.max(box.max);
+    union(box2) {
+      this.min.min(box2.min);
+      this.max.max(box2.max);
       return this;
     }
     applyMatrix4(matrix) {
@@ -3243,8 +3243,8 @@
       this.max.add(offset);
       return this;
     }
-    equals(box) {
-      return box.min.equals(this.min) && box.max.equals(this.max);
+    equals(box2) {
+      return box2.min.equals(this.min) && box2.max.equals(this.max);
     }
   };
   var _points = [
@@ -3333,8 +3333,8 @@
       const radiusSum = this.radius + sphere.radius;
       return sphere.center.distanceToSquared(this.center) <= radiusSum * radiusSum;
     }
-    intersectsBox(box) {
-      return box.intersectsSphere(this);
+    intersectsBox(box2) {
+      return box2.intersectsSphere(this);
     }
     intersectsPlane(plane) {
       return Math.abs(plane.distanceToPoint(this.center)) <= this.radius;
@@ -3565,23 +3565,23 @@
       }
       return false;
     }
-    intersectBox(box, target) {
+    intersectBox(box2, target) {
       let tmin, tmax, tymin, tymax, tzmin, tzmax;
       const invdirx = 1 / this.direction.x, invdiry = 1 / this.direction.y, invdirz = 1 / this.direction.z;
       const origin = this.origin;
       if (invdirx >= 0) {
-        tmin = (box.min.x - origin.x) * invdirx;
-        tmax = (box.max.x - origin.x) * invdirx;
+        tmin = (box2.min.x - origin.x) * invdirx;
+        tmax = (box2.max.x - origin.x) * invdirx;
       } else {
-        tmin = (box.max.x - origin.x) * invdirx;
-        tmax = (box.min.x - origin.x) * invdirx;
+        tmin = (box2.max.x - origin.x) * invdirx;
+        tmax = (box2.min.x - origin.x) * invdirx;
       }
       if (invdiry >= 0) {
-        tymin = (box.min.y - origin.y) * invdiry;
-        tymax = (box.max.y - origin.y) * invdiry;
+        tymin = (box2.min.y - origin.y) * invdiry;
+        tymax = (box2.max.y - origin.y) * invdiry;
       } else {
-        tymin = (box.max.y - origin.y) * invdiry;
-        tymax = (box.min.y - origin.y) * invdiry;
+        tymin = (box2.max.y - origin.y) * invdiry;
+        tymax = (box2.min.y - origin.y) * invdiry;
       }
       if (tmin > tymax || tymin > tmax)
         return null;
@@ -3590,11 +3590,11 @@
       if (tymax < tmax || tmax !== tmax)
         tmax = tymax;
       if (invdirz >= 0) {
-        tzmin = (box.min.z - origin.z) * invdirz;
-        tzmax = (box.max.z - origin.z) * invdirz;
+        tzmin = (box2.min.z - origin.z) * invdirz;
+        tzmax = (box2.max.z - origin.z) * invdirz;
       } else {
-        tzmin = (box.max.z - origin.z) * invdirz;
-        tzmax = (box.min.z - origin.z) * invdirz;
+        tzmin = (box2.max.z - origin.z) * invdirz;
+        tzmax = (box2.min.z - origin.z) * invdirz;
       }
       if (tmin > tzmax || tzmin > tmax)
         return null;
@@ -3606,8 +3606,8 @@
         return null;
       return this.at(tmin >= 0 ? tmin : tmax, target);
     }
-    intersectsBox(box) {
-      return this.intersectBox(box, _vector$a) !== null;
+    intersectsBox(box2) {
+      return this.intersectBox(box2, _vector$a) !== null;
     }
     intersectTriangle(a2, b2, c2, backfaceCulling, target) {
       _edge1.subVectors(b2, a2);
@@ -5235,8 +5235,8 @@
     isFrontFacing(direction) {
       return Triangle.isFrontFacing(this.a, this.b, this.c, direction);
     }
-    intersectsBox(box) {
-      return box.intersectsTriangle(this);
+    intersectsBox(box2) {
+      return box2.intersectsTriangle(this);
     }
     closestPointToPoint(p, target) {
       const a2 = this.a, b2 = this.b, c2 = this.c;
@@ -7349,8 +7349,8 @@
       const endSign = this.distanceToPoint(line.end);
       return startSign < 0 && endSign > 0 || endSign < 0 && startSign > 0;
     }
-    intersectsBox(box) {
-      return box.intersectsPlane(this);
+    intersectsBox(box2) {
+      return box2.intersectsPlane(this);
     }
     intersectsSphere(sphere) {
       return sphere.intersectsPlane(this);
@@ -7439,13 +7439,13 @@
       }
       return true;
     }
-    intersectsBox(box) {
+    intersectsBox(box2) {
       const planes = this.planes;
       for (let i = 0; i < 6; i++) {
         const plane = planes[i];
-        _vector$7.x = plane.normal.x > 0 ? box.max.x : box.min.x;
-        _vector$7.y = plane.normal.y > 0 ? box.max.y : box.min.y;
-        _vector$7.z = plane.normal.z > 0 ? box.max.z : box.min.z;
+        _vector$7.x = plane.normal.x > 0 ? box2.max.x : box2.min.x;
+        _vector$7.y = plane.normal.y > 0 ? box2.max.y : box2.min.y;
+        _vector$7.z = plane.normal.z > 0 ? box2.max.z : box2.min.z;
         if (plane.distanceToPoint(_vector$7) < 0) {
           return false;
         }
@@ -22795,18 +22795,18 @@
       }
     });
     if (controller instanceof NumberControllerSlider) {
-      var box = new NumberControllerBox(controller.object, controller.property, { min: controller.__min, max: controller.__max, step: controller.__step });
+      var box2 = new NumberControllerBox(controller.object, controller.property, { min: controller.__min, max: controller.__max, step: controller.__step });
       Common.each(["updateDisplay", "onChange", "onFinishChange", "step", "min", "max"], function(method) {
         var pc = controller[method];
-        var pb = box[method];
-        controller[method] = box[method] = function() {
+        var pb = box2[method];
+        controller[method] = box2[method] = function() {
           var args = Array.prototype.slice.call(arguments);
-          pb.apply(box, args);
+          pb.apply(box2, args);
           return pc.apply(controller, args);
         };
       });
       dom.addClass(li, "has-slider");
-      controller.domElement.insertBefore(box.domElement, controller.domElement.firstElementChild);
+      controller.domElement.insertBefore(box2.domElement, controller.domElement.firstElementChild);
     } else if (controller instanceof NumberControllerBox) {
       var r = function r2(returned) {
         if (Common.isNumber(controller.__min) && Common.isNumber(controller.__max)) {
@@ -25348,20 +25348,20 @@
   }
   function computeBounds(geometry, primitiveDef, parser) {
     const attributes = primitiveDef.attributes;
-    const box = new Box3();
+    const box2 = new Box3();
     if (attributes.POSITION !== void 0) {
       const accessor = parser.json.accessors[attributes.POSITION];
       const min = accessor.min;
       const max = accessor.max;
       if (min !== void 0 && max !== void 0) {
-        box.set(
+        box2.set(
           new Vector3(min[0], min[1], min[2]),
           new Vector3(max[0], max[1], max[2])
         );
         if (accessor.normalized) {
           const boxScale = getNormalizedComponentScale(WEBGL_COMPONENT_TYPES[accessor.componentType]);
-          box.min.multiplyScalar(boxScale);
-          box.max.multiplyScalar(boxScale);
+          box2.min.multiplyScalar(boxScale);
+          box2.max.multiplyScalar(boxScale);
         }
       } else {
         console.warn("THREE.GLTFLoader: Missing min/max properties for accessor POSITION.");
@@ -25394,12 +25394,12 @@
           }
         }
       }
-      box.expandByVector(maxDisplacement);
+      box2.expandByVector(maxDisplacement);
     }
-    geometry.boundingBox = box;
+    geometry.boundingBox = box2;
     const sphere = new Sphere();
-    box.getCenter(sphere.center);
-    sphere.radius = box.min.distanceTo(box.max) / 2;
+    box2.getCenter(sphere.center);
+    sphere.radius = box2.min.distanceTo(box2.max) / 2;
     geometry.boundingSphere = sphere;
   }
   function addPrimitiveAttributes(geometry, primitiveDef, parser) {
@@ -28139,8 +28139,8 @@
         intersectMethod.call(this, shape, quat, position, body, shape);
       }
     }
-    _intersectBox(box, quat, position, body, reportedShape) {
-      return this._intersectConvex(box.convexPolyhedronRepresentation, quat, position, body, reportedShape);
+    _intersectBox(box2, quat, position, body, reportedShape) {
+      return this._intersectConvex(box2.convexPolyhedronRepresentation, quat, position, body, reportedShape);
     }
     _intersectPlane(shape, quat, position, body, reportedShape) {
       const from = this.from;
@@ -28852,56 +28852,6 @@
   var SPHSystem_update_gradW = new Vec3();
   var SPHSystem_update_r_vec = new Vec3();
   var SPHSystem_update_u = new Vec3();
-  var Plane2 = class extends Shape {
-    constructor() {
-      super({
-        type: Shape.types.PLANE
-      });
-      this.worldNormal = new Vec3();
-      this.worldNormalNeedsUpdate = true;
-      this.boundingSphereRadius = Number.MAX_VALUE;
-    }
-    computeWorldNormal(quat) {
-      const n = this.worldNormal;
-      n.set(0, 0, 1);
-      quat.vmult(n, n);
-      this.worldNormalNeedsUpdate = false;
-    }
-    calculateLocalInertia(mass, target) {
-      if (target === void 0) {
-        target = new Vec3();
-      }
-      return target;
-    }
-    volume() {
-      return Number.MAX_VALUE;
-    }
-    calculateWorldAABB(pos, quat, min, max) {
-      tempNormal.set(0, 0, 1);
-      quat.vmult(tempNormal, tempNormal);
-      const maxVal = Number.MAX_VALUE;
-      min.set(-maxVal, -maxVal, -maxVal);
-      max.set(maxVal, maxVal, maxVal);
-      if (tempNormal.x === 1) {
-        max.x = pos.x;
-      } else if (tempNormal.x === -1) {
-        min.x = pos.x;
-      }
-      if (tempNormal.y === 1) {
-        max.y = pos.y;
-      } else if (tempNormal.y === -1) {
-        min.y = pos.y;
-      }
-      if (tempNormal.z === 1) {
-        max.z = pos.z;
-      } else if (tempNormal.z === -1) {
-        min.z = pos.z;
-      }
-    }
-    updateBoundingSphereRadius() {
-      this.boundingSphereRadius = Number.MAX_VALUE;
-    }
-  };
   var tempNormal = new Vec3();
   var getHeightAt_weights = new Vec3();
   var getHeightAt_a = new Vec3();
@@ -30957,6 +30907,9 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   var scene = new Scene();
+  var world = new World({
+    gravity: new Vec3(0, -9.81, 0)
+  });
   var camera = new PerspectiveCamera(
     45,
     window.outerWidth / window.outerHeight,
@@ -30995,9 +30948,17 @@
   scene.add(boxMesh);
   var assetLoader = new GLTFLoader();
   var dice = assetLoader.load("./Models/DiceD6.gltf", (gtlf) => {
+    const diceID = gtlf.scene.id;
     gtlf.castShadow = true;
     gtlf.scene.scale.set(0.25, 0.25, 0.25);
+    const size = box.getSize(new Vector3());
+    gtlf.scene.name = "D6";
+    gtlf.scene.body = new Body({
+      mass: 1,
+      shape: new Box(new Vec3(size.x / 2, size.y / 2, size.z / 2))
+    });
     scene.add(gtlf.scene);
+    world.add(gtlf.scene);
   });
   var gui = new GUI$1();
   var options = {
@@ -31008,16 +30969,29 @@
   gui.add(options, "angle", 0, 1);
   gui.add(options, "penumbra", 0, 1);
   gui.add(options, "intensity", 0, 1);
-  var world = new World({
-    gravity: new Vec3(0, -9.81, 0)
-  });
+  var groundPhysMat = new Material2();
   var groundBody = new Body({
-    shape: new Plane2(),
-    type: Body.STATIC
+    shape: new Box(new Vec3(15, 15, 0.1)),
+    type: Body.STATIC,
+    material: groundPhysMat
   });
+  world.addBody(groundBody);
   groundBody.position.y = -5;
   groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-  world.addBody(groundBody);
+  var boxPhysMat = new Material2();
+  var boxBody = new Body({
+    mass: 1,
+    shape: new Box(new Vec3(1, 1, 1)),
+    position: new Vec3(0, 10, 5),
+    material: boxPhysMat
+  });
+  world.addBody(boxBody);
+  var velocity1 = Math.random() * 5;
+  var velocity2 = Math.random() * 5;
+  var velocity3 = Math.random() * 5;
+  boxBody.angularVelocity.set(velocity1, velocity2, velocity3);
+  var dice_ground = new ContactMaterial(groundPhysMat, boxPhysMat, { restitution: 0.45 });
+  world.addContactMaterial(dice_ground);
   var timeStep = 1 / 60;
   function animate(time) {
     world.step(timeStep);
@@ -31027,6 +31001,8 @@
     sLightHelper.update();
     groundMesh.position.copy(groundBody.position);
     groundMesh.quaternion.copy(groundBody.quaternion);
+    boxMesh.position.copy(boxBody.position);
+    boxMesh.quaternion.copy(boxBody.quaternion);
     renderer.render(scene, camera);
   }
   renderer.setAnimationLoop(animate);
