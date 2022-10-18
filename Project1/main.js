@@ -85,7 +85,7 @@ const dice = assetLoader.load("./Models/DiceD6.gltf", (gtlf) =>{
   const diceID = gtlf.scene.id
   gtlf.castShadow = true;
   gtlf.scene.scale.set(.25, .25, .25);
-  const size = box.getSize(new THREE.Vector3());
+  // const size = box.getSize(new THREE.Vector3());
   gtlf.scene.name = "D6";
   gtlf.scene.body = new CANNON.Body({
     mass: 1,
@@ -150,7 +150,7 @@ let velocity2 = Math.random() *5
 let velocity3 = Math.random() *5
 
 boxBody.angularVelocity.set(velocity1,velocity2,velocity3);
-// console.log(velocity1 + ", " + velocity2 + ", " + velocity3)
+console.log(velocity1 + ", " + velocity2 + ", " + velocity3)
 
 
 
