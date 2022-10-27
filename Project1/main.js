@@ -4,8 +4,7 @@ import * as dat from 'dat.gui';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import * as CANNON from 'cannon-es'
-import { Raycaster, ShaderMaterial, WireframeGeometry } from 'three';
-import { Material } from 'cannon-es';
+
 
 // const D6 = new URL('./Models/DiceD6.obj', import.meta.url);
 const renderer = new THREE.WebGLRenderer();
@@ -29,8 +28,8 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 const orbit = new OrbitControls(camera, renderer.domElement)
-const axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
+// const axesHelper = new THREE.AxesHelper( 5 );
+// scene.add( axesHelper );
 
 camera.position.set(-10, 30, 30);
 orbit.update();
@@ -68,34 +67,42 @@ spotLight.position.set(-100, 100, 0);
 spotLight.castShadow = true;
 spotLight.angle = 0.2
 
-const sLightHelper = new THREE.SpotLightHelper(spotLight);
-scene. add(sLightHelper);
+// const sLightHelper = new THREE.SpotLightHelper(spotLight);
+// scene. add(sLightHelper);
 
 
 const boxGeo = new THREE.BoxGeometry(2, 2, 2);
 const boxMat = new THREE.MeshBasicMaterial({
   color: 0x00FF00,
-  wireframe: true
+  // wireframe: true,
 });
 const boxMesh = new THREE.Mesh(boxGeo, boxMat);
 scene.add(boxMesh);
+boxMesh.castShadow = true;
 
+let diceD6;
 const assetLoader = new GLTFLoader();
-const dice = assetLoader.load("./Models/DiceD6.gltf", (gtlf) =>{
-  const diceID = gtlf.scene.id
+diceD6 = assetLoader.load("./Models/DiceD6.gltf", (gtlf) =>{
   gtlf.castShadow = true;
+  // console.log(gtlf)
   gtlf.scene.scale.set(.25, .25, .25);
   // const size = box.getSize(new THREE.Vector3());
-  gtlf.scene.name = "D6";
-  gtlf.scene.body = new CANNON.Body({
-    mass: 1,
-    shape: new CANNON.Box(new CANNON.Vec3(size.x/2, size.y/2, size.z/2))
-  })
+  // gtlf.scene.name = "D6";
+  // gtlf.scene.body = new CANNON.Body({
+  //   mass: 1,
+  //   shape: new CANNON.Box(new CANNON.Vec3(size.x/2, size.y/2, size.z/2))
+  // })
+  // console.log(gtlf.scene)
+  diceD6 = gtlf.scene;
   scene.add(gtlf.scene)
-  world.add(gtlf.scene)
+  // world.add(gtlf.scene)
+
+  return gtlf.scene
 
 
 });
+
+console.log(diceD6)
 
 
 
@@ -110,8 +117,8 @@ const gui = new dat.GUI();
 
 const options = {
 
-  angle: 0.02,
-  penumbra: 0,
+  angle: 0.1,
+  penumbra: .5,
   intensity:1
 };
 
@@ -135,6 +142,7 @@ const groundBody = new CANNON.Body({
 world.addBody(groundBody);
 groundBody.position.y = -5;
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
+groundBody.receiveShadow = true;
 
 const boxPhysMat = new CANNON.Material();
 const boxBody = new CANNON.Body({
@@ -144,6 +152,7 @@ const boxBody = new CANNON.Body({
   material:boxPhysMat
 });
 world.addBody(boxBody);
+boxBody.castShadow = true;
 
 let velocity1 = Math.random() *5
 let velocity2 = Math.random() *5
@@ -170,7 +179,7 @@ function animate(time) {
   spotLight.angle = options.angle;
   spotLight.penumbra = options.penumbra;
   spotLight.intensity = options.intensity;
-  sLightHelper.update();
+  // sLightHelper.update();
 
   groundMesh.position.copy(groundBody.position);
   groundMesh.quaternion.copy(groundBody.quaternion);

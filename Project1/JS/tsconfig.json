@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "watch": true,
+        "lib": ["dom", "ES2022"],  
+        "allowUnreachableCode": false,
+        "alwaysStrict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "module": "es6",
+        "moduleResolution": "node",
+        "outDir": "js",
+        "strict": true,
+      }
+}

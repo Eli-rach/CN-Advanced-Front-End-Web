@@ -3044,9 +3044,9 @@
     clone() {
       return new this.constructor().copy(this);
     }
-    copy(box2) {
-      this.min.copy(box2.min);
-      this.max.copy(box2.max);
+    copy(box) {
+      this.min.copy(box.min);
+      this.max.copy(box.max);
       return this;
     }
     makeEmpty() {
@@ -3106,8 +3106,8 @@
     containsPoint(point) {
       return point.x < this.min.x || point.x > this.max.x || point.y < this.min.y || point.y > this.max.y || point.z < this.min.z || point.z > this.max.z ? false : true;
     }
-    containsBox(box2) {
-      return this.min.x <= box2.min.x && box2.max.x <= this.max.x && this.min.y <= box2.min.y && box2.max.y <= this.max.y && this.min.z <= box2.min.z && box2.max.z <= this.max.z;
+    containsBox(box) {
+      return this.min.x <= box.min.x && box.max.x <= this.max.x && this.min.y <= box.min.y && box.max.y <= this.max.y && this.min.z <= box.min.z && box.max.z <= this.max.z;
     }
     getParameter(point, target) {
       return target.set(
@@ -3116,8 +3116,8 @@
         (point.z - this.min.z) / (this.max.z - this.min.z)
       );
     }
-    intersectsBox(box2) {
-      return box2.max.x < this.min.x || box2.min.x > this.max.x || box2.max.y < this.min.y || box2.min.y > this.max.y || box2.max.z < this.min.z || box2.min.z > this.max.z ? false : true;
+    intersectsBox(box) {
+      return box.max.x < this.min.x || box.min.x > this.max.x || box.max.y < this.min.y || box.min.y > this.max.y || box.max.z < this.min.z || box.min.z > this.max.z ? false : true;
     }
     intersectsSphere(sphere) {
       this.clampPoint(sphere.center, _vector$b);
@@ -3212,16 +3212,16 @@
       target.radius = this.getSize(_vector$b).length() * 0.5;
       return target;
     }
-    intersect(box2) {
-      this.min.max(box2.min);
-      this.max.min(box2.max);
+    intersect(box) {
+      this.min.max(box.min);
+      this.max.min(box.max);
       if (this.isEmpty())
         this.makeEmpty();
       return this;
     }
-    union(box2) {
-      this.min.min(box2.min);
-      this.max.max(box2.max);
+    union(box) {
+      this.min.min(box.min);
+      this.max.max(box.max);
       return this;
     }
     applyMatrix4(matrix) {
@@ -3243,8 +3243,8 @@
       this.max.add(offset);
       return this;
     }
-    equals(box2) {
-      return box2.min.equals(this.min) && box2.max.equals(this.max);
+    equals(box) {
+      return box.min.equals(this.min) && box.max.equals(this.max);
     }
   };
   var _points = [
@@ -3333,8 +3333,8 @@
       const radiusSum = this.radius + sphere.radius;
       return sphere.center.distanceToSquared(this.center) <= radiusSum * radiusSum;
     }
-    intersectsBox(box2) {
-      return box2.intersectsSphere(this);
+    intersectsBox(box) {
+      return box.intersectsSphere(this);
     }
     intersectsPlane(plane) {
       return Math.abs(plane.distanceToPoint(this.center)) <= this.radius;
@@ -3565,23 +3565,23 @@
       }
       return false;
     }
-    intersectBox(box2, target) {
+    intersectBox(box, target) {
       let tmin, tmax, tymin, tymax, tzmin, tzmax;
       const invdirx = 1 / this.direction.x, invdiry = 1 / this.direction.y, invdirz = 1 / this.direction.z;
       const origin = this.origin;
       if (invdirx >= 0) {
-        tmin = (box2.min.x - origin.x) * invdirx;
-        tmax = (box2.max.x - origin.x) * invdirx;
+        tmin = (box.min.x - origin.x) * invdirx;
+        tmax = (box.max.x - origin.x) * invdirx;
       } else {
-        tmin = (box2.max.x - origin.x) * invdirx;
-        tmax = (box2.min.x - origin.x) * invdirx;
+        tmin = (box.max.x - origin.x) * invdirx;
+        tmax = (box.min.x - origin.x) * invdirx;
       }
       if (invdiry >= 0) {
-        tymin = (box2.min.y - origin.y) * invdiry;
-        tymax = (box2.max.y - origin.y) * invdiry;
+        tymin = (box.min.y - origin.y) * invdiry;
+        tymax = (box.max.y - origin.y) * invdiry;
       } else {
-        tymin = (box2.max.y - origin.y) * invdiry;
-        tymax = (box2.min.y - origin.y) * invdiry;
+        tymin = (box.max.y - origin.y) * invdiry;
+        tymax = (box.min.y - origin.y) * invdiry;
       }
       if (tmin > tymax || tymin > tmax)
         return null;
@@ -3590,11 +3590,11 @@
       if (tymax < tmax || tmax !== tmax)
         tmax = tymax;
       if (invdirz >= 0) {
-        tzmin = (box2.min.z - origin.z) * invdirz;
-        tzmax = (box2.max.z - origin.z) * invdirz;
+        tzmin = (box.min.z - origin.z) * invdirz;
+        tzmax = (box.max.z - origin.z) * invdirz;
       } else {
-        tzmin = (box2.max.z - origin.z) * invdirz;
-        tzmax = (box2.min.z - origin.z) * invdirz;
+        tzmin = (box.max.z - origin.z) * invdirz;
+        tzmax = (box.min.z - origin.z) * invdirz;
       }
       if (tmin > tzmax || tzmin > tmax)
         return null;
@@ -3606,8 +3606,8 @@
         return null;
       return this.at(tmin >= 0 ? tmin : tmax, target);
     }
-    intersectsBox(box2) {
-      return this.intersectBox(box2, _vector$a) !== null;
+    intersectsBox(box) {
+      return this.intersectBox(box, _vector$a) !== null;
     }
     intersectTriangle(a2, b2, c2, backfaceCulling, target) {
       _edge1.subVectors(b2, a2);
@@ -5235,8 +5235,8 @@
     isFrontFacing(direction) {
       return Triangle.isFrontFacing(this.a, this.b, this.c, direction);
     }
-    intersectsBox(box2) {
-      return box2.intersectsTriangle(this);
+    intersectsBox(box) {
+      return box.intersectsTriangle(this);
     }
     closestPointToPoint(p, target) {
       const a2 = this.a, b2 = this.b, c2 = this.c;
@@ -7349,8 +7349,8 @@
       const endSign = this.distanceToPoint(line.end);
       return startSign < 0 && endSign > 0 || endSign < 0 && startSign > 0;
     }
-    intersectsBox(box2) {
-      return box2.intersectsPlane(this);
+    intersectsBox(box) {
+      return box.intersectsPlane(this);
     }
     intersectsSphere(sphere) {
       return sphere.intersectsPlane(this);
@@ -7439,13 +7439,13 @@
       }
       return true;
     }
-    intersectsBox(box2) {
+    intersectsBox(box) {
       const planes = this.planes;
       for (let i = 0; i < 6; i++) {
         const plane = planes[i];
-        _vector$7.x = plane.normal.x > 0 ? box2.max.x : box2.min.x;
-        _vector$7.y = plane.normal.y > 0 ? box2.max.y : box2.min.y;
-        _vector$7.z = plane.normal.z > 0 ? box2.max.z : box2.min.z;
+        _vector$7.x = plane.normal.x > 0 ? box.max.x : box.min.x;
+        _vector$7.y = plane.normal.y > 0 ? box.max.y : box.min.y;
+        _vector$7.z = plane.normal.z > 0 ? box.max.z : box.min.z;
         if (plane.distanceToPoint(_vector$7) < 0) {
           return false;
         }
@@ -19821,153 +19821,6 @@
       return new this.constructor().copy(this);
     }
   };
-  var _vector$3 = /* @__PURE__ */ new Vector3();
-  var SpotLightHelper = class extends Object3D {
-    constructor(light, color) {
-      super();
-      this.light = light;
-      this.light.updateMatrixWorld();
-      this.matrix = light.matrixWorld;
-      this.matrixAutoUpdate = false;
-      this.color = color;
-      const geometry = new BufferGeometry();
-      const positions = [
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        1,
-        0,
-        0,
-        0,
-        -1,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        0,
-        0,
-        0,
-        0,
-        -1,
-        1
-      ];
-      for (let i = 0, j = 1, l = 32; i < l; i++, j++) {
-        const p1 = i / l * Math.PI * 2;
-        const p2 = j / l * Math.PI * 2;
-        positions.push(
-          Math.cos(p1),
-          Math.sin(p1),
-          1,
-          Math.cos(p2),
-          Math.sin(p2),
-          1
-        );
-      }
-      geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
-      const material = new LineBasicMaterial({ fog: false, toneMapped: false });
-      this.cone = new LineSegments(geometry, material);
-      this.add(this.cone);
-      this.update();
-    }
-    dispose() {
-      this.cone.geometry.dispose();
-      this.cone.material.dispose();
-    }
-    update() {
-      this.light.updateMatrixWorld();
-      const coneLength = this.light.distance ? this.light.distance : 1e3;
-      const coneWidth = coneLength * Math.tan(this.light.angle);
-      this.cone.scale.set(coneWidth, coneWidth, coneLength);
-      _vector$3.setFromMatrixPosition(this.light.target.matrixWorld);
-      this.cone.lookAt(_vector$3);
-      if (this.color !== void 0) {
-        this.cone.material.color.set(this.color);
-      } else {
-        this.cone.material.color.copy(this.light.color);
-      }
-    }
-  };
-  var AxesHelper = class extends LineSegments {
-    constructor(size = 1) {
-      const vertices = [
-        0,
-        0,
-        0,
-        size,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        size,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        size
-      ];
-      const colors = [
-        1,
-        0,
-        0,
-        1,
-        0.6,
-        0,
-        0,
-        1,
-        0,
-        0.6,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0.6,
-        1
-      ];
-      const geometry = new BufferGeometry();
-      geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
-      geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
-      const material = new LineBasicMaterial({ vertexColors: true, toneMapped: false });
-      super(geometry, material);
-      this.type = "AxesHelper";
-    }
-    setColors(xAxisColor, yAxisColor, zAxisColor) {
-      const color = new Color();
-      const array = this.geometry.attributes.color.array;
-      color.set(xAxisColor);
-      color.toArray(array, 0);
-      color.toArray(array, 3);
-      color.set(yAxisColor);
-      color.toArray(array, 6);
-      color.toArray(array, 9);
-      color.set(zAxisColor);
-      color.toArray(array, 12);
-      color.toArray(array, 15);
-      this.geometry.attributes.color.needsUpdate = true;
-      return this;
-    }
-    dispose() {
-      this.geometry.dispose();
-      this.material.dispose();
-    }
-  };
   if (typeof __THREE_DEVTOOLS__ !== "undefined") {
     __THREE_DEVTOOLS__.dispatchEvent(new CustomEvent("register", { detail: {
       revision: REVISION
@@ -22795,18 +22648,18 @@
       }
     });
     if (controller instanceof NumberControllerSlider) {
-      var box2 = new NumberControllerBox(controller.object, controller.property, { min: controller.__min, max: controller.__max, step: controller.__step });
+      var box = new NumberControllerBox(controller.object, controller.property, { min: controller.__min, max: controller.__max, step: controller.__step });
       Common.each(["updateDisplay", "onChange", "onFinishChange", "step", "min", "max"], function(method) {
         var pc = controller[method];
-        var pb = box2[method];
-        controller[method] = box2[method] = function() {
+        var pb = box[method];
+        controller[method] = box[method] = function() {
           var args = Array.prototype.slice.call(arguments);
-          pb.apply(box2, args);
+          pb.apply(box, args);
           return pc.apply(controller, args);
         };
       });
       dom.addClass(li, "has-slider");
-      controller.domElement.insertBefore(box2.domElement, controller.domElement.firstElementChild);
+      controller.domElement.insertBefore(box.domElement, controller.domElement.firstElementChild);
     } else if (controller instanceof NumberControllerBox) {
       var r = function r2(returned) {
         if (Common.isNumber(controller.__min) && Common.isNumber(controller.__max)) {
@@ -25348,20 +25201,20 @@
   }
   function computeBounds(geometry, primitiveDef, parser) {
     const attributes = primitiveDef.attributes;
-    const box2 = new Box3();
+    const box = new Box3();
     if (attributes.POSITION !== void 0) {
       const accessor = parser.json.accessors[attributes.POSITION];
       const min = accessor.min;
       const max = accessor.max;
       if (min !== void 0 && max !== void 0) {
-        box2.set(
+        box.set(
           new Vector3(min[0], min[1], min[2]),
           new Vector3(max[0], max[1], max[2])
         );
         if (accessor.normalized) {
           const boxScale = getNormalizedComponentScale(WEBGL_COMPONENT_TYPES[accessor.componentType]);
-          box2.min.multiplyScalar(boxScale);
-          box2.max.multiplyScalar(boxScale);
+          box.min.multiplyScalar(boxScale);
+          box.max.multiplyScalar(boxScale);
         }
       } else {
         console.warn("THREE.GLTFLoader: Missing min/max properties for accessor POSITION.");
@@ -25394,12 +25247,12 @@
           }
         }
       }
-      box2.expandByVector(maxDisplacement);
+      box.expandByVector(maxDisplacement);
     }
-    geometry.boundingBox = box2;
+    geometry.boundingBox = box;
     const sphere = new Sphere();
-    box2.getCenter(sphere.center);
-    sphere.radius = box2.min.distanceTo(box2.max) / 2;
+    box.getCenter(sphere.center);
+    sphere.radius = box.min.distanceTo(box.max) / 2;
     geometry.boundingSphere = sphere;
   }
   function addPrimitiveAttributes(geometry, primitiveDef, parser) {
@@ -28139,8 +27992,8 @@
         intersectMethod.call(this, shape, quat, position, body, shape);
       }
     }
-    _intersectBox(box2, quat, position, body, reportedShape) {
-      return this._intersectConvex(box2.convexPolyhedronRepresentation, quat, position, body, reportedShape);
+    _intersectBox(box, quat, position, body, reportedShape) {
+      return this._intersectConvex(box.convexPolyhedronRepresentation, quat, position, body, reportedShape);
     }
     _intersectPlane(shape, quat, position, body, reportedShape) {
       const from = this.from;
@@ -30917,8 +30770,6 @@
     1e3
   );
   var orbit = new OrbitControls(camera, renderer.domElement);
-  var axesHelper = new AxesHelper(5);
-  scene.add(axesHelper);
   camera.position.set(-10, 30, 30);
   orbit.update();
   var planeGeometry = new PlaneGeometry(30, 30);
@@ -30937,33 +30788,28 @@
   spotLight.position.set(-100, 100, 0);
   spotLight.castShadow = true;
   spotLight.angle = 0.2;
-  var sLightHelper = new SpotLightHelper(spotLight);
-  scene.add(sLightHelper);
   var boxGeo = new BoxGeometry(2, 2, 2);
   var boxMat = new MeshBasicMaterial({
-    color: 65280,
-    wireframe: true
+    color: 65280
   });
   var boxMesh = new Mesh(boxGeo, boxMat);
   scene.add(boxMesh);
+  boxMesh.castShadow = true;
+  var diceD6;
   var assetLoader = new GLTFLoader();
-  var dice = assetLoader.load("./Models/DiceD6.gltf", (gtlf) => {
-    const diceID = gtlf.scene.id;
+  diceD6 = assetLoader.load("./Models/DiceD6.gltf", (gtlf) => {
     gtlf.castShadow = true;
     gtlf.scene.scale.set(0.25, 0.25, 0.25);
-    const size = box.getSize(new Vector3());
-    gtlf.scene.name = "D6";
-    gtlf.scene.body = new Body({
-      mass: 1,
-      shape: new Box(new Vec3(size.x / 2, size.y / 2, size.z / 2))
-    });
+    console.log(gtlf.scene);
+    diceD6 = gtlf.scene;
     scene.add(gtlf.scene);
-    world.add(gtlf.scene);
+    return gtlf.scene;
   });
+  console.log(diceD6);
   var gui = new GUI$1();
   var options = {
-    angle: 0.02,
-    penumbra: 0,
+    angle: 0.1,
+    penumbra: 0.5,
     intensity: 1
   };
   gui.add(options, "angle", 0, 1);
@@ -30978,6 +30824,7 @@
   world.addBody(groundBody);
   groundBody.position.y = -5;
   groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+  groundBody.receiveShadow = true;
   var boxPhysMat = new Material2();
   var boxBody = new Body({
     mass: 1,
@@ -30986,10 +30833,12 @@
     material: boxPhysMat
   });
   world.addBody(boxBody);
+  boxBody.castShadow = true;
   var velocity1 = Math.random() * 5;
   var velocity2 = Math.random() * 5;
   var velocity3 = Math.random() * 5;
   boxBody.angularVelocity.set(velocity1, velocity2, velocity3);
+  console.log(velocity1 + ", " + velocity2 + ", " + velocity3);
   var dice_ground = new ContactMaterial(groundPhysMat, boxPhysMat, { restitution: 0.45 });
   world.addContactMaterial(dice_ground);
   var timeStep = 1 / 60;
@@ -30998,7 +30847,6 @@
     spotLight.angle = options.angle;
     spotLight.penumbra = options.penumbra;
     spotLight.intensity = options.intensity;
-    sLightHelper.update();
     groundMesh.position.copy(groundBody.position);
     groundMesh.quaternion.copy(groundBody.quaternion);
     boxMesh.position.copy(boxBody.position);
@@ -31009,7 +30857,7 @@
   window.addEventListener("resize", function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(windowe.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
   });
 })();
 /**
