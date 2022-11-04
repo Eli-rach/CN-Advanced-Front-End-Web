@@ -1,0 +1,14 @@
+{
+  "name": "assignment5-newlibrary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sketch.js",
+  "scripts": {
+    "Dev": "npx parcel index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "parcel": "^2.7.0"
+  }
+}

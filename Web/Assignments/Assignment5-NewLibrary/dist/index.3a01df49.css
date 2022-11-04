@@ -1,0 +1,30 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+}
+
+#score {
+  position: relative;
+  top: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+#menu {
+  color: #fff;
+  text-align: center;
+  background-color: #ff5722;
+  border-radius: 33%;
+  margin-top: 500px;
+  margin-left: 350px;
+  margin-right: 350px;
+  padding: 25px;
+}
+
+/*# sourceMappingURL=index.3a01df49.css.map */
