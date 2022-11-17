@@ -1,6 +1,6 @@
 # How to make a to-do list
 
-![toDo](./ToDo.md "To Do low Fedelity")
+![toDo](./Picture.PNG "To Do low Fedelity")
 
 This being a very small and very simple todolist is very simple in concept and probably simple in creating (If you didn't wish to save the todo list upon a refresh).
 
