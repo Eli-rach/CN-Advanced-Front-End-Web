@@ -1,0 +1,13 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "main": "js/main.js",
+  "scripts": {
+    "serve": "npx http-server"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "lodash": "^4.17.21",
+    "parcel": "^2.7.0"
+  }
+}

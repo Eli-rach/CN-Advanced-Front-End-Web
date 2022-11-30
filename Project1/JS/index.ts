@@ -6,3 +6,6 @@ async function hello() {
     return "world";
     
 }
+
+let lucky;
+
